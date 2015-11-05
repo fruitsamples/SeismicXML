@@ -1,54 +1,56 @@
- ### SeismicXML  ###
+SeismicXML
 
 ===========================================================================
 DESCRIPTION:
 
-The SeismicXML sample application demonstrates how to use NSXMLParser to parse XML documents.
-When you launch the application it fetches and parses an RSS feed from the USGS that provides data on 
-recent earthquakes around the world. It displays the location, date, and magnitude of each earthquake, 
-along with a color-coded graphic that indicates the severity of the earthquake.
+The SeismicXML sample application demonstrates how to use NSXMLParser to parse XML data. When you launch the application it downloads and parses an RSS feed from the United States Geological Survey (USGS) that provides data on recent earthquakes around the world. It displays the location, date, and magnitude of each earthquake, along with a color-coded graphic that indicates the severity of the earthquake. The XML parsing occurs on a background thread and updates the earthquakes table view with batches of parsed objects.
 
-The XML parsing occurs on a background thread and updates the earthquakes table view each time an 
-earthquake is found in the XML document. The XMLReader class includes extensive comments that
-describe how to use NSXMLParser.
+The USGS feed is at http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml and includes all recent magnitude 2.5 and greater earthquakes world-wide, representing each earthquake with an <entry> element, in the following form:
+ 
+<entry>
+    <id>urn:earthquake-usgs-gov:us:2008rkbc</id>
+    <title>M 5.8, Banda Sea</title>
+    <updated>2008-04-29T19:10:01Z</updated>
+    <link rel="alternate" type="text/html" href="/eqcenter/recenteqsww/Quakes/us2008rkbc.php"/>
+    <link rel="related" type="application/cap+xml" href="/eqcenter/catalogs/cap/us2008rkbc"/>
+    <summary type="html">
+        <img src="http://earthquake.usgs.gov/images/globes/-5_130.jpg" alt="6.102&#176;S 127.502&#176;E" align="left" hspace="20" /><p>Tuesday, April 29, 2008 19:10:01 UTC<br>Wednesday, April 30, 2008 04:10:01 AM at epicenter</p><p><strong>Depth</strong>: 395.20 km (245.57 mi)</p>
+    </summary>
+    <georss:point>-6.1020 127.5017</georss:point>
+    <georss:elev>-395200</georss:elev>
+    <category label="Age" term="Past hour"/>
+</entry>
+
+NSXMLParser is an "event-driven" parser. This means that it makes a single pass over the XML data and calls back to its delegate with "events". These events include the beginning and end of elements, parsed character data, errors, and more. In this sample, the application delegate, an instance of the "SeismicXMLAppDelegate" class, also implements the delegate methods for the parser object. In these methods, Earthquake objects are instantiated and their properties are set, according to the data provided by the parser. For some data, additional work is required - numbers extracted from strings, or date objects created from strings. 
+
 
 ===========================================================================
 BUILD REQUIREMENTS
 
-Mac OS X 10.5.3, Xcode 3.1, iPhone OS 2.0
+iPhone SDK 3.0
 
 ===========================================================================
 RUNTIME REQUIREMENTS
 
-Mac OS X 10.5.3, iPhone OS 2.0
+iPhone SDK 3.0
 
 ===========================================================================
 PACKAGING LIST
 
-SeismicXMLAppDelegate.h
-SeismicXMLAppDelegate.m
-The controller for the application.
+SeismicXMLAppDelegate
+Delegate for the application, initiates the download of the XML data and parses the Earthquake objects at launch time.
 
-AppDelegateMethods.h
-An interface that provides some method declarations so other classes can use methods in AppDelegate.
-
-Earthquake.h
-Earthquake.m
+Earthquake
 The model class that stores the information about an earthquake.
 
-RootViewController.h
-RootViewController.m
+RootViewController
 A UITableViewController subclass that manages the table view.
 
-TableViewCell.h
-TableViewCell.m
-A custom table cell.
-
-XMLReader.h
-XMLReader.m
-Uses NSXMLParser to build the model objects.
-
+===========================================================================
 CHANGES FROM PREVIOUS VERSIONS
+
+Version 1.8
+- Added separate use of NSURLConnection to asynchronously download data instead of using NSXMLParser -initWithContentsOfURL. Upgraded for 3.0 SDK due to deprecated APIs.
 
 Version 1.7
 - Updated for and tested with iPhone OS 2.0. First public release.
@@ -85,4 +87,4 @@ Version 1.1
 - Removed unused framework.
 
 ===========================================================================
-Copyright (C) 2008 Apple Inc. All rights reserved.
+Copyright (C) 2008-2009 Apple Inc. All rights reserved.

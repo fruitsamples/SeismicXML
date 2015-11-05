@@ -1,146 +1,194 @@
 /*
-
-File: RootViewController.m
-Abstract: Standard table view controller.
-
-Version: 1.7
-
-Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple Inc.
-("Apple") in consideration of your agreement to the following terms, and your
-use, installation, modification or redistribution of this Apple software
-constitutes acceptance of these terms.  If you do not agree with these terms,
-please do not use, install, modify or redistribute this Apple software.
-
-In consideration of your agreement to abide by the following terms, and subject
-to these terms, Apple grants you a personal, non-exclusive license, under
-Apple's copyrights in this original Apple software (the "Apple Software"), to
-use, reproduce, modify and redistribute the Apple Software, with or without
-modifications, in source and/or binary forms; provided that if you redistribute
-the Apple Software in its entirety and without modifications, you must retain
-this notice and the following text and disclaimers in all such redistributions
-of the Apple Software.
-Neither the name, trademarks, service marks or logos of Apple Inc. may be used
-to endorse or promote products derived from the Apple Software without specific
-prior written permission from Apple.  Except as expressly stated in this notice,
-no other rights or licenses, express or implied, are granted by Apple herein,
-including but not limited to any patent rights that may be infringed by your
-derivative works or by other works in which the Apple Software may be
-incorporated.
-
-The Apple Software is provided by Apple on an "AS IS" basis.  APPLE MAKES NO
-WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED
-WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
-COMBINATION WITH YOUR PRODUCTS.
-
-IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, MODIFICATION AND/OR
-DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF
-CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
-APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-Copyright (C) 2008 Apple Inc. All Rights Reserved.
-
-*/
+     File: RootViewController.m
+ Abstract: View controller for displaying the earthquake list.
+  Version: 1.8
+ 
+ Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
+ Inc. ("Apple") in consideration of your agreement to the following
+ terms, and your use, installation, modification or redistribution of
+ this Apple software constitutes acceptance of these terms.  If you do
+ not agree with these terms, please do not use, install, modify or
+ redistribute this Apple software.
+ 
+ In consideration of your agreement to abide by the following terms, and
+ subject to these terms, Apple grants you a personal, non-exclusive
+ license, under Apple's copyrights in this original Apple software (the
+ "Apple Software"), to use, reproduce, modify and redistribute the Apple
+ Software, with or without modifications, in source and/or binary forms;
+ provided that if you redistribute the Apple Software in its entirety and
+ without modifications, you must retain this notice and the following
+ text and disclaimers in all such redistributions of the Apple Software.
+ Neither the name, trademarks, service marks or logos of Apple Inc. may
+ be used to endorse or promote products derived from the Apple Software
+ without specific prior written permission from Apple.  Except as
+ expressly stated in this notice, no other rights or licenses, express or
+ implied, are granted by Apple herein, including but not limited to any
+ patent rights that may be infringed by your derivative works or by other
+ works in which the Apple Software may be incorporated.
+ 
+ The Apple Software is provided by Apple on an "AS IS" basis.  APPLE
+ MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
+ THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND
+ OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.
+ 
+ IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION,
+ MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED
+ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
+ STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+ 
+ Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ 
+ */
 
 #import "RootViewController.h"
-#import "SeismicXMLAppDelegate.h"
-#import "TableViewCell.h"
-#import "AppDelegateMethods.h"
+#import "Earthquake.h"
 
 @implementation RootViewController
 
-
-- (id)initWithStyle:(UITableViewStyle)style {
-	if (self = [super initWithStyle:style]) {
-		self.title = NSLocalizedString(@"Earthquakes", @"RootViewController title");
-        self.tableView.delegate = self;
-        self.tableView.dataSource = self;
-        self.tableView.rowHeight = 48.0;
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        self.tableView.sectionHeaderHeight = 0;
-	}
-	return self;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	SeismicXMLAppDelegate *appDelegate = (SeismicXMLAppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSUInteger count = [appDelegate countOfList];
-	// If no earthquakes were parsed because the RSS feed was not available,
-    // return a count of 1 so that the data source method tableView:cellForRowAtIndexPath: is called.
-    // It also calls -[SeismicXMLAppDelegate isDataSourceAvailable] to determine what to show in the table.
-    if ([appDelegate isDataSourceAvailable] == NO) {
-        return 1;
-    }
-    return count;
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{	
-	SeismicXMLAppDelegate *appDelegate = (SeismicXMLAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[appDelegate showEarthquakeInfo:[(TableViewCell *)[tableView cellForRowAtIndexPath:indexPath] quake]];
-	return nil;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-	static NSString *MyIdentifier = @"MyIdentifier";
-    
-  	TableViewCell *cell = (TableViewCell *)[tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-	if (cell == nil) {
-		cell = [[[TableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:MyIdentifier] autorelease];
-	}
-    
-    // Set up the cell.
-	SeismicXMLAppDelegate *appDelegate = (SeismicXMLAppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-    // If the RSS feed isn't accessible (which could happen if the network isn't available), show an informative
-    // message in the first row of the table.
-	if ([appDelegate isDataSourceAvailable] == NO) {
-        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:@"DefaultTableViewCell"] autorelease];
-        cell.text = NSLocalizedString(@"RSS Host Not Available", @"RSS Host Not Available message");
-		cell.textColor = [UIColor colorWithWhite:0.5 alpha:0.5];
-		cell.accessoryType = UITableViewCellAccessoryNone;
-		return cell;
-	}
-	
-	Earthquake *quakeForRow = [appDelegate objectInListAtIndex:indexPath.row];
-    [cell setQuake:quakeForRow];
-	return cell;
-}
-
+@synthesize earthquakeList;
 
 - (void)dealloc {
+    [earthquakeList release];
+    [dateFormatter release];
 	[super dealloc];
 }
 
-
-- (void)loadView {
-	[super loadView];
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // The table row height is not the standard value. Since all the rows have the same height, it is more efficient to
+    // set this property on the table, rather than using the delegate method -tableView:heightForRowAtIndexPath:.
+    self.tableView.rowHeight = 48.0;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
+// On-demand initializer for read-only property.
+- (NSDateFormatter *)dateFormatter {
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    }
+    return dateFormatter;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
+// Based on the magnitude of the earthquake, return an image indicating its seismic strength.
+- (UIImage *)imageForMagnitude:(CGFloat)magnitude {	
+	if (magnitude >= 5.0) {
+		return [UIImage imageNamed:@"5.0.png"];
+	}
+	if (magnitude >= 4.0) {
+		return [UIImage imageNamed:@"4.0.png"];
+	}
+	if (magnitude >= 3.0) {
+		return [UIImage imageNamed:@"3.0.png"];
+	}
+	if (magnitude >= 2.0) {
+		return [UIImage imageNamed:@"2.0.png"];
+	}
+	return nil;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+// The number of rows is equal to the number of earthquakes in the array.
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [earthquakeList count];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
+// The cell uses a custom layout, but otherwise has standard behavior for UITableViewCell. In these cases,
+// it's preferable to modify the view hierarchy of the cell's content view, rather than subclassing. Instead,
+// view "tags" are used to identify specific controls, such as labels, image views, etc.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Each subview in the cell will be identified by a unique tag.
+    static NSUInteger const kLocationLabelTag = 2;
+    static NSUInteger const kDateLabelTag = 3;
+    static NSUInteger const kMagnitudeLabelTag = 4;
+    static NSUInteger const kMagnitudeImageTag = 5;
+    
+    // Declare references to the subviews which will display the earthquake data.
+    UILabel *locationLabel = nil;
+    UILabel *dateLabel = nil;
+    UILabel *magnitudeLabel = nil;
+    UIImageView *magnitudeImage = nil;
+    
+	static NSString *kEarthquakeCellID = @"EarthquakeCellID";    
+  	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEarthquakeCellID];
+	if (cell == nil) {
+        // No reusable cell was available, so we create a new cell and configure its subviews.
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kEarthquakeCellID] autorelease];
+        
+        locationLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10, 3, 190, 20)] autorelease];
+        locationLabel.tag = kLocationLabelTag;
+        locationLabel.font = [UIFont boldSystemFontOfSize:14];
+        [cell.contentView addSubview:locationLabel];
+        
+        dateLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10, 28, 170, 14)] autorelease];
+        dateLabel.tag = kDateLabelTag;
+        dateLabel.font = [UIFont systemFontOfSize:10];
+        [cell.contentView addSubview:dateLabel];
+
+        magnitudeLabel = [[[UILabel alloc] initWithFrame:CGRectMake(277, 9, 170, 29)] autorelease];
+        magnitudeLabel.tag = kMagnitudeLabelTag;
+        magnitudeLabel.font = [UIFont boldSystemFontOfSize:24];
+        magnitudeLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+        [cell.contentView addSubview:magnitudeLabel];
+        
+        magnitudeImage = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"5.0.png"]] autorelease];
+        CGRect imageFrame = magnitudeImage.frame;
+        imageFrame.origin = CGPointMake(180, 2);
+        magnitudeImage.frame = imageFrame;
+        magnitudeImage.tag = kMagnitudeImageTag;
+        magnitudeImage.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+        [cell.contentView addSubview:magnitudeImage];
+    } else {
+        // A reusable cell was available, so we just need to get a reference to the subviews using their tags.
+        locationLabel = (UILabel *)[cell.contentView viewWithTag:kLocationLabelTag];
+        dateLabel = (UILabel *)[cell.contentView viewWithTag:kDateLabelTag];
+        magnitudeLabel = (UILabel *)[cell.contentView viewWithTag:kMagnitudeLabelTag];
+        magnitudeImage = (UIImageView *)[cell.contentView viewWithTag:kMagnitudeImageTag];
+    }
+    
+    // Get the specific earthquake for this row.
+	Earthquake *earthquake = [earthquakeList objectAtIndex:indexPath.row];
+    
+    // Set the relevant data for each subview in the cell.
+    locationLabel.text = earthquake.location;
+    dateLabel.text = [self.dateFormatter stringFromDate:earthquake.date];
+    magnitudeLabel.text = [NSString stringWithFormat:@"%.1f", earthquake.magnitude];
+    magnitudeImage.image = [self imageForMagnitude:earthquake.magnitude];
+
+	return cell;
 }
 
-- (void)didReceiveMemoryWarning {
-	[super didReceiveMemoryWarning];
+// When the user taps a row in the table, display the USGS web page that displays details of the earthquake they selected.
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {	
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"External App Sheet Title", @"Title for sheet displayed with options for displaying Earthquake data in other applications") delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel") destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Show USGS Site in Safari", @"Show USGS Site in Safari"), NSLocalizedString(@"Show Location in Maps", @"Show Location in Maps"), nil];
+    [sheet showInView:self.view];
+    [sheet release];
+}
+
+// Called when the user selects an option in the sheet. The sheet will automatically be dismissed.
+- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+    Earthquake *earthquake = (Earthquake *)[earthquakeList objectAtIndex:selectedIndexPath.row];
+    switch (buttonIndex) {
+        case 0: {
+            NSString *webLink = [earthquake USGSWebLink];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:webLink]];
+        } break;
+        case 1: {
+            static NSString * const kMapsBaseURL = @"http://maps.google.com/maps?";
+            NSString *mapsQuery = [NSString stringWithFormat:@"z=6&t=h&ll=%f,%f", earthquake.latitude, earthquake.longitude];
+            mapsQuery = [mapsQuery stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSString *mapsURLString = [kMapsBaseURL stringByAppendingString:mapsQuery];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:mapsURLString]];
+        } break;
+        default:
+            break;
+    }
+    [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:YES];
 }
 
 @end
