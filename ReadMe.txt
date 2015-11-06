@@ -27,12 +27,12 @@ NSXMLParser is an "event-driven" parser. This means that it makes a single pass 
 ===========================================================================
 BUILD REQUIREMENTS
 
-iPhone SDK 3.0
+iOS SDK 4.0
 
 ===========================================================================
 RUNTIME REQUIREMENTS
 
-iPhone SDK 3.0
+iPhone OS 3.2 or later
 
 ===========================================================================
 PACKAGING LIST
@@ -48,6 +48,15 @@ A UITableViewController subclass that manages the table view.
 
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS
+
+Version 2.1
+- Update artwork and added NSXMLParserDelegate protocol.
+
+Version 2.0
+- Updated for and tested with iOS 4.0 SDK.
+
+Version 1.9
+- Proper formatting of dates, fixed earthquake reporting URLs due to changes in USGS page, removed unused frameworks, improved error reporting, now using KVO for table view updates.
 
 Version 1.8
 - Added separate use of NSURLConnection to asynchronously download data instead of using NSXMLParser -initWithContentsOfURL. Upgraded for 3.0 SDK due to deprecated APIs.
@@ -87,4 +96,4 @@ Version 1.1
 - Removed unused framework.
 
 ===========================================================================
-Copyright (C) 2008-2009 Apple Inc. All rights reserved.
+Copyright (C) 2008-2010 Apple Inc. All rights reserved.

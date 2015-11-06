@@ -1,7 +1,7 @@
 /*
      File: RootViewController.h
  Abstract: View controller for displaying the earthquake list.
-  Version: 1.8
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,20 +41,22 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2010 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
 @interface RootViewController : UITableViewController <UIActionSheetDelegate> {
-    // This array is passed to the controller by the application delegate.
-    NSArray *earthquakeList;
+    NSMutableArray *earthquakeList;
+    
     // This date formatter is used to convert NSDate objects to NSString objects, using the user's preferred formats.
     NSDateFormatter *dateFormatter;
 }
 
-@property (nonatomic, retain) NSArray *earthquakeList;
+@property (nonatomic, retain) NSMutableArray *earthquakeList;
 @property (nonatomic, retain, readonly) NSDateFormatter *dateFormatter;
+
+- (void)insertEarthquakes:(NSArray *)earthquakes;   // addition method of earthquakes (for KVO purposes)
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: SeismicXMLAppDelegate.h
  Abstract: Delegate for the application, initiates the download of the XML data and parses the Earthquake objects at launch time.
-  Version: 1.8
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2010 Apple Inc. All Rights Reserved.
  
  */
 
@@ -49,12 +49,16 @@
 
 @class Earthquake, RootViewController;
 
-@interface SeismicXMLAppDelegate : NSObject <UIApplicationDelegate> {
-	UIWindow *window;
-	UINavigationController *navigationController;
-	RootViewController *rootViewController;
-	NSMutableArray *earthquakeList;
-    
+@interface SeismicXMLAppDelegate : NSObject <UIApplicationDelegate, NSXMLParserDelegate> {
+    UIWindow *window;
+    UINavigationController *navigationController;
+    RootViewController *rootViewController;
+
+@private
+    NSMutableArray *earthquakeList;
+
+    NSDateFormatter *dateFormatter;
+
     // for downloading the xml data
     NSURLConnection *earthquakeFeedConnection;
     NSMutableData *earthquakeData;
@@ -73,14 +77,13 @@
 @property (nonatomic, retain) IBOutlet RootViewController *rootViewController;
 @property (nonatomic, retain) NSMutableArray *earthquakeList;
 
+@property (nonatomic, retain, readonly) NSDateFormatter *dateFormatter;
+
 @property (nonatomic, retain) NSURLConnection *earthquakeFeedConnection;
 @property (nonatomic, retain) NSMutableData *earthquakeData;
 
 @property (nonatomic, retain) Earthquake *currentEarthquakeObject;
 @property (nonatomic, retain) NSMutableString *currentParsedCharacterData;
 @property (nonatomic, retain) NSMutableArray *currentParseBatch;
-
-- (void)addEarthquakesToList:(NSArray *)earthquakes;
-- (void)handleError:(NSError *)error;
 
 @end

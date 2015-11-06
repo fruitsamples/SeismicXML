@@ -1,7 +1,7 @@
 /*
      File: Earthquake.h
  Abstract: The model class that stores the information about an earthquake.
-  Version: 1.8
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2010 Apple Inc. All Rights Reserved.
  
  */
 
@@ -56,7 +56,7 @@
     // Date and time at which the earthquake occurred.
     NSDate *date;
     // Holds the URL to the USGS web page of the earthquake. The application uses this URL to open that page in Safari.
-    NSString *USGSWebLink;
+    NSURL *USGSWebLink;
     // Latitude and longitude of the earthquake. These properties are not displayed by the application, but are used to  
     // create a URL for opening the Maps application. They could alternatively be used in conjuction with MapKit 
     // to be shown in a map view.
@@ -67,7 +67,7 @@
 @property (nonatomic, assign) CGFloat magnitude;
 @property (nonatomic, retain) NSString *location;
 @property (nonatomic, retain) NSDate *date;
-@property (nonatomic, retain) NSString *USGSWebLink;
+@property (nonatomic, retain) NSURL *USGSWebLink;
 @property (nonatomic, assign) double latitude;
 @property (nonatomic, assign) double longitude;
 
