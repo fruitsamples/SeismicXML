@@ -1,7 +1,7 @@
 /*
      File: Earthquake.m
  Abstract: The model class that stores the information about an earthquake.
-  Version: 2.1
+  Version: 2.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following

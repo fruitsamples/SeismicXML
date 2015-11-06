@@ -3,7 +3,8 @@ SeismicXML
 ===========================================================================
 DESCRIPTION:
 
-The SeismicXML sample application demonstrates how to use NSXMLParser to parse XML data. When you launch the application it downloads and parses an RSS feed from the United States Geological Survey (USGS) that provides data on recent earthquakes around the world. It displays the location, date, and magnitude of each earthquake, along with a color-coded graphic that indicates the severity of the earthquake. The XML parsing occurs on a background thread and updates the earthquakes table view with batches of parsed objects.
+The SeismicXML sample application demonstrates how to use NSXMLParser to parse XML data.
+When you launch the application it downloads and parses an RSS feed from the United States Geological Survey (USGS) that provides data on recent earthquakes around the world. It displays the location, date, and magnitude of each earthquake, along with a color-coded graphic that indicates the severity of the earthquake. The XML parsing occurs on a background thread and updates the earthquakes table view with batches of parsed objects.
 
 The USGS feed is at http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml and includes all recent magnitude 2.5 and greater earthquakes world-wide, representing each earthquake with an <entry> element, in the following form:
  
@@ -32,7 +33,7 @@ iOS SDK 4.0
 ===========================================================================
 RUNTIME REQUIREMENTS
 
-iPhone OS 3.2 or later
+iOS OS 3.2 or later
 
 ===========================================================================
 PACKAGING LIST
@@ -46,8 +47,14 @@ The model class that stores the information about an earthquake.
 RootViewController
 A UITableViewController subclass that manages the table view.
 
+ParseOperation
+The NSOperation class used to perform the XML parsing of earthquake data.
+
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS
+
+Version 2.3
+- Now using NSOperation to perform the XML parsing, silencing any parse aborting errors.
 
 Version 2.1
 - Update artwork and added NSXMLParserDelegate protocol.

@@ -1,7 +1,7 @@
 /*
      File: RootViewController.m
  Abstract: View controller for displaying the earthquake list.
-  Version: 2.1
+  Version: 2.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -57,6 +57,7 @@
 - (void)dealloc {
     [earthquakeList release];
     [dateFormatter release];
+    
     [super dealloc];
 }
 
@@ -72,10 +73,15 @@
     self.tableView.rowHeight = 48.0;
     
     // KVO: listen for changes to our earthquake data source for table view updates
-    [self addObserver:self
-                forKeyPath:@"earthquakeList"
-                   options:0
-                   context:NULL];
+    [self addObserver:self forKeyPath:@"earthquakeList" options:0 context:NULL];
+}
+
+- (void)viewDidUnload {
+    [super viewDidUnload];
+    
+    self.earthquakeList = nil;
+    
+    [self removeObserver:self forKeyPath:@"earthquakeList"];
 }
 
 // On-demand initializer for read-only property.
@@ -248,4 +254,3 @@
 }
 
 @end
-

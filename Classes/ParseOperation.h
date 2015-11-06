@@ -1,6 +1,6 @@
 /*
-     File: RootViewController.h
- Abstract: View controller for displaying the earthquake list.
+     File: ParseOperation.h
+ Abstract: The NSOperation class used to perform the XML parsing of earthquake data.
   Version: 2.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
@@ -45,18 +45,30 @@
  
  */
 
-#import <UIKit/UIKit.h>
+extern NSString *kAddEarthquakesNotif;
+extern NSString *kEarthquakeResultsKey;
 
-@interface RootViewController : UITableViewController <UIActionSheetDelegate> {
-    NSMutableArray *earthquakeList;
-    
-    // This date formatter is used to convert NSDate objects to NSString objects, using the user's preferred formats.
+extern NSString *kEarthquakesErrorNotif;
+extern NSString *kEarthquakesMsgErrorKey;
+
+@class Earthquake;
+
+@interface ParseOperation : NSOperation {
+    NSData *earthquakeData;
+
+@private
     NSDateFormatter *dateFormatter;
+    
+    // these variables are used during parsing
+    Earthquake *currentEarthquakeObject;
+    NSMutableArray *currentParseBatch;
+    NSMutableString *currentParsedCharacterData;
+    
+    BOOL accumulatingParsedCharacterData;
+    BOOL didAbortParsing;
+    NSUInteger parsedEarthquakesCounter;
 }
 
-@property (nonatomic, retain) NSMutableArray *earthquakeList;
-@property (nonatomic, retain, readonly) NSDateFormatter *dateFormatter;
-
-- (void)insertEarthquakes:(NSArray *)earthquakes;   // addition method of earthquakes (for KVO purposes)
+@property (copy, readonly) NSData *earthquakeData;
 
 @end
